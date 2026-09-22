@@ -267,6 +267,30 @@ def test_print_ascii():
     assert printed[: len(expected)] == expected
 
 
+@pytest.mark.parametrize(
+    ("border", "tty", "invert"),
+    [
+        (0, False, False),
+        (4, False, False),
+        (4, False, True),
+        (4, True, False),
+    ],
+)
+def test_get_ascii_matches_print_ascii(border, tty, invert):
+    qr = qrcode.QRCode(border=border)
+    qr.add_data("Some data")
+
+    output = io.StringIO()
+    output.isatty = lambda: True
+    qr.print_ascii(out=output, tty=tty, invert=invert)
+
+    ascii_qr = qr.get_ascii(tty=tty, invert=invert)
+
+    assert isinstance(ascii_qr, str)
+    assert ascii_qr
+    assert ascii_qr == output.getvalue()
+
+
 def test_print_tty_stdout():
     qr = qrcode.QRCode()
     with mock.patch("sys.stdout") as fake_stdout:
