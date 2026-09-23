@@ -278,7 +278,7 @@ class QRCode(Generic[GenericImage]):
         out.write("\x1b[1;47m" + (" " * (modcount * 2 + 4)) + "\x1b[0m\n")
         out.flush()
 
-    def get_ascii(self, tty=False, invert=False):
+    def get_ascii(self, tty: bool = False, invert: bool = False) -> str:
         """
         Return the QR Code as a string using ASCII characters.
 

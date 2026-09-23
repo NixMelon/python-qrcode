@@ -291,6 +291,25 @@ def test_get_ascii_matches_print_ascii(border, tty, invert):
     assert ascii_qr == output.getvalue()
 
 
+def test_get_ascii_tty_returns_terminal_escape_codes():
+    qr = qrcode.QRCode(border=0)
+    qr.add_data("Some data")
+
+    ascii_qr = qr.get_ascii(tty=True)
+
+    assert ascii_qr.startswith("\x1b[48;5;232m\x1b[38;5;255m")
+    assert ascii_qr.endswith("\x1b[0m\n")
+
+
+def test_get_ascii_is_stable_across_repeated_calls():
+    qr = qrcode.QRCode()
+    qr.add_data("Some data")
+
+    first_output = qr.get_ascii()
+
+    assert qr.get_ascii() == first_output
+
+
 def test_print_tty_stdout():
     qr = qrcode.QRCode()
     with mock.patch("sys.stdout") as fake_stdout:
