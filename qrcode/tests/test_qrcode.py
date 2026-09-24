@@ -310,6 +310,18 @@ def test_get_ascii_is_stable_across_repeated_calls():
     assert qr.get_ascii() == first_output
 
 
+@pytest.mark.parametrize("border", [0, 4])
+def test_get_ascii_dimensions(border):
+    qr = qrcode.QRCode(border=border)
+    qr.add_data("Some data")
+
+    lines = qr.get_ascii().splitlines()
+    output_width = qr.modules_count + border * 2
+
+    assert len(lines) == (output_width + 1) // 2
+    assert all(len(line) == output_width for line in lines)
+
+
 def test_print_tty_stdout():
     qr = qrcode.QRCode()
     with mock.patch("sys.stdout") as fake_stdout:
